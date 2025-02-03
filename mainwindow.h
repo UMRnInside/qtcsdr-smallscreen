@@ -53,12 +53,6 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_toggleWFM_toggled(bool checked);
-    void on_toggleNFM_toggled(bool checked);
-    void on_toggleAM_toggled(bool checked);
-    void on_toggleUSB_toggled(bool checked);
-    void on_toggleLSB_toggled(bool checked);
-    void on_toggleRun_toggled(bool checked);
     void on_spinFreq_valueChanged(int val);
     void tmrRead_timeout();
     void setShift();
@@ -69,19 +63,20 @@ private slots:
     void on_spinCenter_valueChanged(int arg1);
 
     void on_comboDirectSamp_currentIndexChanged(int index);
+    void on_comboDemodMode_currentIndexChanged(int index);
 
     void on_toggleTransmit_toggled(bool checked);
+    void on_toggleRun_toggled(bool checked);
 
 private:
     Ui::MainWindow *ui;
     QList<QPushButton*> modsButtons;
-    void untoggleOtherModButtonsThan(QPushButton* pb);
+    void changeDemodulator(QString mode);
     void sendCommand(unsigned char cmd_num, unsigned value);
-    QString getDemodulatorCommand();
+    QString getDemodulatorCommand(QString mode);
     void redirectProcessOutput(QProcess &proc, bool onlyStdErr = false);
     void updateFilterBw();
     QString getNextArgAfter(QString what);
-    QString getModulatorCommand();
     QProcess procDemod;
     QProcess procDistrib;
     QProcess procIQServer;

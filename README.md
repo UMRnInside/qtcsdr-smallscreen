@@ -1,49 +1,18 @@
-# qtcsdr
+# qtcsdr Smallscreen Variant
 
-**qtcsdr** makes a ham transceiver out of your Raspberry Pi 2 and RTL-SDR!
+A smallscreen RECEIVE-ONLY variant of **qtcsdr**
 
-![qtcsdr](/images/screenshot.png?raw=true)
+![qtcsdr](/images/screenshot_new.png?raw=true)
 
-Click on the video to see it in action:
+Big thanks to *Evariste, F5OEO* for <a href="https://github.com/F5OEO/rpitx/">rpitx</a>, and *HA7ILM* for original version of [qtcsdr](https://github.com/ha7ilm/qtcsdr/).
 
-<a href="https://www.youtube.com/watch?v=3Y8qJ6nmNPY" target="_blank"><img src="http://ha5kfu.sch.bme.hu/up/levlista/qtcsdr-screenshot-youtube.png" 
-alt="qtcsdr"/></a>
+## Changes
 
-Big thanks to *Evariste, F5OEO* for <a href="https://github.com/F5OEO/rpitx/">rpitx</a> that makes this possible.
+* This variant is receive only.
+* Main window fits in 480x320 small display.
 
 ## What you will need to make it work
 * You will need an RTL-SDR dongle which will be the SDR receiver.
-* You will need a Raspberry Pi 2, which will be the SDR transmitter.<br />With the help of the fantastic <a href="https://github.com/F5OEO/rpitx">rpitx project</a>, we can transmit AM/NFM/WFM/LSB/USB on the "GPIO 18" (number 12) pin of the Pi (<a href="http://301o583r8shhildde3s0vcnh.wpengine.netdna-cdn.com/wp-content/uploads/2015/04/Raspberry-Pi-GPIO-compressed.jpg">see pinout over here</a>).
-* You will need **a proper band-pass filter for the transmitter output**, see the explanation below.<br />Soon you will be able to purchase the QRPi filter + amplifier board that was featured at TAPR DCC 2015, <a href="http://rfsparkling.com/qrpi">see details here.</a> (You can also build your own filter circuit based on HOWTOs found on the web.)<br /><br/>
-**UPDATE:** We made some more measurements, and we found that although NFM/WFM works as expected, the AM/SSB modes need a much higher level of filtering as the PWM-based amplitude modulation implemented in *rpitx* affects the spectrum even more. Currently work is being done on improving both the software and the hardware.<br /><br />
-
-
-* To transmit, you will need an USB audio card, because the Raspberry Pi doesn't have a microphone input. 
-* You may or may not need an external powered USB hub to supply enough current to the audio card and the RTL-SDR.
-* As the OS for the Raspberry Pi 2, you will need at least **Raspbian Jessie (09/2015)** as it has the Qt5 packages in its repos (or you would have to manually download Qt5 binaries or build Qt5 from source).
-
-## Warning
-
-To transmit on ham radio bands, you will need a ham radio license.
-
-Even if you do have a ham radio license:
-
-* Do not transmit on an antenna without using a band-pass filter!
-* Do not transmit on an antenna without using a band-pass filter!
-* Do not transmit on an antenna without using a band-pass filter!
- 
-The Raspberry Pi GPIO 18 is a digital output, which generates square wave signals, so that if you transmit on 28 MHz, then you will also transmit on:
-
-* 28 × 3 = 84 MHz
-* 28 × 5 = 140 MHz
-* 28 × 7 = 196 MHz<br/>...
-
-...and actually you may distrub some important radio communication services. Do not do this!
-
-If you need an SDR transmitter that doesn't generate harmonics like this, then you should buy a proper one, for example the <a href="https://greatscottgadgets.com/hackrf/">HackRF</a>.
-
-Also NEVER EVER transmit or do any tests with your transmitter in the airband (where flights communicate)! <br />
-The VHF airband is between 108 MHz and 137MHz: never transmit there. You have been warned!
 
 ## How to set it up
 
@@ -72,57 +41,58 @@ A short list of requirements:
 * <a href="http://sdr.osmocom.org/trac/wiki/rtl-sdr">rtl_sdr</a>
 * <a href="https://github.com/simonyiszk/csdr">csdr</a> (dev branch)
 * <a href="https://github.com/ha7ilm/pgroup">pgroup</a>
-* <a href="https://github.com/ha7ilm/rpitx">rpitx</a> - if you want to transmit<br />(it was written by F5OEO, and I modified it to make it work with **qtcsdr**)
+* <a href="https://github.com/ha7ilm/rpitx">rpitx</a> - if you want to transmit<br />(it was written by F5OEO, and HA7ILM modified it to make it work with **qtcsdr**)
 * **ncat** from the **nmap** package (this will distribute the I/Q signal between processes).
 
 Guide:
+```bash
+sudo apt-get install nmap qt5-default qt5-qmake git libfftw3-dev
 
-    sudo apt-get install nmap qt5-default qt5-qmake git libfftw3-dev
+#Install the SDR transmitter software rpitx by F5OEO
+git clone https://github.com/ha7ilm/rpitx.git
+cd rpitx
+bash install.sh
+cd ..
 
-    #Install the SDR transmitter software rpitx by F5OEO
-    git clone https://github.com/ha7ilm/rpitx.git
-    cd rpitx
-    bash install.sh
-    cd ..
-    
-    #Install pgroup
-    git clone https://github.com/ha7ilm/pgroup.git
-    cd pgroup
-    make && sudo make install
-    cd ..
-    
-    #Install csdr, the DSP tool
-    git clone https://github.com/simonyiszk/csdr.git
-    cd csdr
-    git fetch
-    git checkout dev
-    make && sudo make install
-    cd ..
-    
-    #Install qtcsdr, the GUI
-    git clone https://github.com/ha7ilm/qtcsdr.git
-    cd qtcsdr
-    mkdir build
-    cd build
-    qmake ..
-    make -j4
-    cd ../..
-    
-    #Install RTL-SDR driver and tools  --  skip if already done
-    sudo apt-get install cmake libusb-1.0-0-dev 
-    git clone https://github.com/keenerd/rtl-sdr
-    cd rtl-sdr/ && mkdir build && cd build
-    cmake ../ -DINSTALL_UDEV_RULES=ON
-    make && sudo make install && sudo ldconfig
-    cd ../..
+#Install pgroup
+git clone https://github.com/ha7ilm/pgroup.git
+cd pgroup
+make && sudo make install
+cd ..
 
-    #Disable the DVB-T driver, which would prevent the rtl_sdr tool from accessing the stick
-    #(if you want to use it for DVB-T reception later, you should undo this change):
-    sudo bash -c 'echo -e "\n# for RTL-SDR:\nblacklist dvb_usb_rtl28xxu\n" >> /etc/modprobe.d/blacklist.conf'
-    sudo rmmod dvb_usb_rtl28xxu # disable that kernel module for the current session
-    
-    #Go back to qtcsdr directory
-    cd qtcsdr/build
+#Install csdr, the DSP tool
+git clone https://github.com/simonyiszk/csdr.git
+cd csdr
+git fetch
+git checkout dev
+make && sudo make install
+cd ..
+
+#Install qtcsdr, the GUI
+git clone https://github.com/ha7ilm/qtcsdr.git
+cd qtcsdr
+mkdir build
+cd build
+qmake ..
+make -j4
+cd ../..
+
+#Install RTL-SDR driver and tools  --  skip if already done
+sudo apt-get install cmake libusb-1.0-0-dev 
+git clone https://github.com/keenerd/rtl-sdr
+cd rtl-sdr/ && mkdir build && cd build
+cmake ../ -DINSTALL_UDEV_RULES=ON
+make && sudo make install && sudo ldconfig
+cd ../..
+
+#Disable the DVB-T driver, which would prevent the rtl_sdr tool from accessing the stick
+#(if you want to use it for DVB-T reception later, you should undo this change):
+sudo bash -c 'echo -e "\n# for RTL-SDR:\nblacklist dvb_usb_rtl28xxu\n" >> /etc/modprobe.d/blacklist.conf'
+sudo rmmod dvb_usb_rtl28xxu # disable that kernel module for the current session
+
+#Go back to qtcsdr directory
+cd qtcsdr/build
+```
 
 * Now you should plug the USB audio card and the RTL-SDR into the USB hub connected to the Pi. 
 * Also plug microphone and headphones in the audio card.

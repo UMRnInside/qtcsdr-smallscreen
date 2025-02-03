@@ -2,12 +2,15 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>621</width>
-    <height>391</height>
+    <width>480</width>
+    <height>320</height>
    </rect>
   </property>
   <property name="font">
@@ -42,7 +45,7 @@
      <widget class="QWidget" name="widgetControls" native="true">
       <property name="minimumSize">
        <size>
-        <width>603</width>
+        <width>400</width>
         <height>159</height>
        </size>
       </property>
@@ -67,23 +70,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>Frequency:</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="toggleAM">
-       <property name="geometry">
-        <rect>
-         <x>420</x>
-         <y>0</y>
-         <width>61</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>AM</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
+        <string>FREQ:</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_2">
@@ -96,7 +83,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>Offset:</string>
+        <string>OFFSET:</string>
        </property>
       </widget>
       <widget class="QSpinBox" name="spinFreq">
@@ -115,7 +102,7 @@
         <number>1000</number>
        </property>
        <property name="value">
-        <number>89500000</number>
+        <number>15000000</number>
        </property>
       </widget>
       <widget class="QSpinBox" name="spinOffset">
@@ -137,58 +124,7 @@
         <number>100</number>
        </property>
        <property name="value">
-        <number>200000</number>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="toggleWFM">
-       <property name="geometry">
-        <rect>
-         <x>300</x>
-         <y>0</y>
-         <width>61</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>WFM</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="toggleUSB">
-       <property name="geometry">
-        <rect>
-         <x>480</x>
-         <y>0</y>
-         <width>61</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>USB</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="toggleLSB">
-       <property name="geometry">
-        <rect>
-         <x>540</x>
-         <y>0</y>
-         <width>61</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>LSB</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
+        <number>0</number>
        </property>
       </widget>
       <widget class="QPushButton" name="toggleRun">
@@ -201,23 +137,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>Receive</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="toggleNFM">
-       <property name="geometry">
-        <rect>
-         <x>360</x>
-         <y>0</y>
-         <width>61</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>NFM</string>
+        <string>ON/OFF</string>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -239,7 +159,7 @@
         <number>1000</number>
        </property>
        <property name="value">
-        <number>89300000</number>
+        <number>15000000</number>
        </property>
       </widget>
       <widget class="QLabel" name="label_3">
@@ -252,15 +172,18 @@
         </rect>
        </property>
        <property name="text">
-        <string>Center:</string>
+        <string>CENTER:</string>
        </property>
       </widget>
       <widget class="QComboBox" name="comboDirectSamp">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="geometry">
         <rect>
          <x>300</x>
-         <y>42</y>
-         <width>301</width>
+         <y>40</y>
+         <width>141</width>
          <height>31</height>
         </rect>
        </property>
@@ -279,25 +202,6 @@
          <string>Direct sampling (Q branch)</string>
         </property>
        </item>
-      </widget>
-      <widget class="QPushButton" name="toggleTransmit">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>450</x>
-         <y>80</y>
-         <width>151</width>
-         <height>71</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Transmit</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
       </widget>
       <widget class="QLabel" name="label_4">
        <property name="geometry">
@@ -357,6 +261,46 @@
        <item>
         <property name="text">
          <string>240000</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboDemodMode">
+       <property name="geometry">
+        <rect>
+         <x>300</x>
+         <y>0</y>
+         <width>141</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <item>
+        <property name="text">
+         <string>NOOP</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>WFM</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>NFM</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>AM</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>LSB</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>USB</string>
         </property>
        </item>
       </widget>
