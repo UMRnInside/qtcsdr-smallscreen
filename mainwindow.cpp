@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QProcess>
+#include <QStringList>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -114,9 +115,10 @@ void MainWindow::changeDemodulator(QString mode)
     //we select the new demodulator
     if(ui->toggleRun->isChecked())
     {
-        if(procDemod.pid()) kill(procDemod.pid(), SIGTERM);
+        if(procDemod.processId()) kill(procDemod.processId(), SIGTERM);
         procDemod.waitForFinished(1000);
-        procDemod.start(getDemodulatorCommand(mode));
+        procDemod.start("/bin/sh", QStringList() << "-c" << getDemodulatorCommand(mode));
+        //procDemod.start(getDemodulatorCommand(mode));
         procDemod.waitForStarted(1000);
         setShift();
     }
@@ -126,7 +128,7 @@ void MainWindow::changeDemodulator(QString mode)
 
 void MainWindow::redirectProcessOutput(QProcess &proc, bool onlyStdErr)
 {
-    if(proc.pid()!=0)
+    if(proc.processId()!=0)
     {
         QString temp = ((onlyStdErr)?"":proc.readAllStandardOutput()) + proc.readAllStandardError();
         if(temp.length()) qStdOut << temp;
@@ -142,7 +144,7 @@ void MainWindow::tmrRead_timeout()
     redirectProcessOutput(procFFT, true);
     redirectProcessOutput(procTX);
 
-    if(procFFT.pid()!=0)
+    if(procFFT.processId()!=0)
     {
         FFTDataBuffer += procFFT.readAll();
         while(ui->widgetFFT->takeOneWaterfallLine(&FFTDataBuffer));
@@ -212,7 +214,7 @@ void MainWindow::on_toggleRun_toggled(bool checked)
         setShift();
         QString IQCommand = QString(CMD_IQSERVER).replace("%SAMP_RATE%",ui->comboSampRate->currentText());
         qDebug() << "IQCommand =" << IQCommand;
-        procIQServer.start(IQCommand);
+        procIQServer.start("/bin/sh", QStringList() << "-c" << IQCommand);
         procIQServer.waitForStarted(1000);
         int nmuxBufsize = 0, nmuxBufcnt = 0, sampRate = ui->comboSampRate->currentText().toInt();
         while (nmuxBufsize < sampRate/4) nmuxBufsize += 4096; //taken from OpenWebRX
@@ -221,12 +223,12 @@ void MainWindow::on_toggleRun_toggled(bool checked)
                 .replace("%NMUX_BUFSIZE%", QString::number(nmuxBufsize))
                 .replace("%NMUX_BUFCNT%", QString::number(nmuxBufcnt));
         qDebug() << "distribCommand =" << distribCommand;
-        procDistrib.start(distribCommand);
+        procDistrib.start("/bin/sh", QStringList() << "-c" << distribCommand);
         procDistrib.waitForStarted(1000);
-        procDemod.start(getDemodulatorCommand( ui->comboDemodMode->currentText() ));
+        procDemod.start("/bin/sh", QStringList() << "-c" << getDemodulatorCommand( ui->comboDemodMode->currentText() ));
         QString FFTCommand = QString(CMD_FFT).replace("%FFT_READ_SIZE%", QString::number(ui->comboSampRate->currentText().toInt()/10));
-        qDebug() << "FFTCommand" << FFTCommand;
-        procFFT.start(FFTCommand);
+        qDebug() << "FFTCommand =" << FFTCommand;
+        procFFT.start("/bin/sh", QStringList() << "-c" << FFTCommand);
         on_spinFreq_valueChanged(ui->spinFreq->value());
         on_comboDirectSamp_currentIndexChanged(0);
         updateFilterBw();
@@ -235,10 +237,10 @@ void MainWindow::on_toggleRun_toggled(bool checked)
     {
         ui->comboSampRate->setEnabled(true);
         unlink(fifoPipePath.toStdString().c_str());
-        if(procDemod.pid()!=0)    kill(procDemod.pid(), SIGTERM);
-        if(procDistrib.pid()!=0)  kill(procDistrib.pid(), SIGTERM);
-        if(procIQServer.pid()!=0) kill(procIQServer.pid(), SIGTERM);
-        if(procFFT.pid()!=0)      kill(procFFT.pid(), SIGTERM);
+        if(procDemod.processId()!=0)    kill(procDemod.processId(), SIGTERM);
+        if(procDistrib.processId()!=0)  kill(procDistrib.processId(), SIGTERM);
+        if(procIQServer.processId()!=0) kill(procIQServer.processId(), SIGTERM);
+        if(procFFT.processId()!=0)      kill(procFFT.processId(), SIGTERM);
         procFFT.readAll();
         FFTDataBuffer.clear();
     }
@@ -266,6 +268,7 @@ void MainWindow::sendCommand(unsigned char cmd_num, unsigned value)
 
 void MainWindow::on_spinFreq_valueChanged(int val)
 {
+    (void)val;
     ui->spinCenter->setValue(ui->spinFreq->value()-ui->spinOffset->value());
     sendCommand(RTLTCP_SET_FREQ, ui->spinCenter->value());
     //procDemod.write("\x01\x05\x55\xa9\x60");
@@ -274,29 +277,30 @@ void MainWindow::on_spinFreq_valueChanged(int val)
 
 void MainWindow::on_spinOffset_valueChanged(int arg1)
 {
+    (void)arg1;
     setShift();
     ui->spinFreq->setValue(ui->spinCenter->value()+ui->spinOffset->value());
 }
 
 void MainWindow::on_spinCenter_valueChanged(int arg1)
 {
+    (void)arg1;
     sendCommand(RTLTCP_SET_FREQ, ui->spinCenter->value());
     ui->spinFreq->setValue(ui->spinCenter->value()+ui->spinOffset->value());
 }
 
 void MainWindow::on_comboDirectSamp_currentIndexChanged(int index)
 {
+    (void)index;
     sendCommand(RTLTCP_SET_DIRECT_SAMPLING,ui->comboDirectSamp->currentIndex());
 }
 
 void MainWindow::on_comboDemodMode_currentIndexChanged(int index)
 {
+    // TODO: use index instead of currentText() ?
+    (void)index;
     QString mode = ui->comboDemodMode->currentText();
     changeDemodulator(mode);
     updateFilterBw();
     sendCommand(RTLTCP_SET_FREQ, ui->spinCenter->value());
-}
-
-void MainWindow::on_toggleTransmit_toggled(bool checked) {
-    // Do nothing
 }

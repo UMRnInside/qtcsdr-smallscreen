@@ -12,7 +12,7 @@ Big thanks to *Evariste, F5OEO* for <a href="https://github.com/F5OEO/rpitx/">rp
 * Main window fits in 480x320 small display.
 
 ## What you will need to make it work
-* You will need an RTL-SDR dongle which will be the SDR receiver.
+* An RTL-SDR dongle as SDR receiver.
 
 ## How to set it up
 
@@ -37,7 +37,7 @@ If *rpi-test.sh* succeeds, it will display the command line for running *qtcsdr*
 
 A short list of requirements:
 
-* Qt5
+* Qt6
 * <a href="http://sdr.osmocom.org/trac/wiki/rtl-sdr">rtl_sdr</a>
 * <a href="https://github.com/simonyiszk/csdr">csdr</a> (dev branch)
 * <a href="https://github.com/ha7ilm/pgroup">pgroup</a>

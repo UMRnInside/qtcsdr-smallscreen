@@ -65,7 +65,6 @@ private slots:
     void on_comboDirectSamp_currentIndexChanged(int index);
     void on_comboDemodMode_currentIndexChanged(int index);
 
-    void on_toggleTransmit_toggled(bool checked);
     void on_toggleRun_toggled(bool checked);
 
 private:
